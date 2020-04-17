@@ -1,0 +1,35 @@
+---
+- name: Download fluxctl
+  become: true
+  get_url:
+    url: "{{ flux_fluxctl_url }}"
+    dest: /usr/local/bin/fluxctl
+    mode: '0755'
+
+- name: Install pip
+  become: true
+  package:
+    name: 
+    - python-setuptools
+    - python-pip
+    state: present
+
+- name: Install ansible kubernetes library
+  pip:
+    name: openshift
+
+- name: Create namespace
+  k8s:
+    name: "{{ flux_namespace }}"
+    api_version: v1
+    kind: Namespace
+    state: present
+    
+
+- name: Install flux
+  shell: fluxctl install \
+        --git-user={{ flux_git_user }} \
+        --git-email={{ flux_git_email }}\
+        --git-url={{ flux_git_url }}\
+        --git-path={{ flux_git_path }} \
+        --namespace={{ flux_namespace }} | kubectl apply -f -

@@ -1,0 +1,28 @@
+---
+- name: Add Kubernetes APT GPG key
+  become: true
+  apt_key:
+    url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+    state: present
+
+- name: Add Kubernetes APT repository
+  become: true
+  apt_repository:
+    repo: deb http://apt.kubernetes.io/ kubernetes-xenial main
+    state: present
+    filename: 'kubernetes'
+
+- name: Install kubernetes packages (Debian/Ubuntu)
+  become: true
+  package:
+    name: [ "kubelet", "kubeadm", "kubectl"]
+    update_cache: yes
+    state: present
+
+- name: Reload kubelet daemon
+  become: true
+  systemd:
+    name: kubelet
+    daemon_reload: yes
+    enabled: yes
+

@@ -1,0 +1,15 @@
+---
+#- hosts: loki
+#  roles:
+#  - containerd
+#  - kubernetes
+
+#- hosts: loki-primary
+#  roles:
+#  - calico
+
+- hosts: loki-primary
+  roles:
+  - andrewrothstein.kubernetes-helm
+  - flux
+

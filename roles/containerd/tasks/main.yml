@@ -1,0 +1,81 @@
+---
+- name: "Create a directory for containerd config"
+  become: true
+  file: path=/etc/containerd state=directory
+
+- name: "Load kernel modules"
+  become: true
+  modprobe:
+    name: "{{ item }}"
+    state: present
+  with_items: 
+    - "br_netfilter"
+    - "overlay"
+
+- name: "Set kernel modules on boot"
+  become: true
+  template:
+    src: modprobe.j2
+    dest: "/etc/modules-load.d/containerd.conf"
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: "Configure Kernel parameter"
+  become: true
+  sysctl:
+    name: "{{ item }}"
+    value: "1"
+  with_items:
+    - "net.bridge.bridge-nf-call-iptables"
+    - "net.bridge.bridge-nf-call-ip6tables"
+    - "net.ipv4.ip_forward"
+
+- name: Add Docker APT GPG key
+  become: true
+  apt_key:
+    url: https://download.docker.com/linux/debian/gpg
+    state: present
+
+- name: Add Kubernetes APT repository
+  become: true
+  apt_repository:
+    repo: "{{ containerd_apt_repository }}"
+    state: present
+    filename: "docker"
+
+- name: Install containerd
+  become: true
+  package:
+    name: [ "containerd.io" ]
+    update_cache: yes
+    state: present
+
+- name: Create config directory
+  become: True
+  file:
+    name: /etc/containerd
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+
+- name: "Configure containerd"
+  become: true
+  template:
+    src: containerd.j2
+    dest: "/etc/containerd/config.toml"
+    owner: root
+    group: root
+    mode: 0644
+  notify: Restart service
+
+- name: Start service
+  become: True
+  service:
+    name: containerd
+    state: started
+    enabled: True
+
+- name: Flush handlers
+  meta: flush_handlers

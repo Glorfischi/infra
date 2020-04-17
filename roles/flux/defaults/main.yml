@@ -1,0 +1,12 @@
+---
+flux_version: 1.19.0
+flux_arch: amd64
+
+flux_fluxctl_url: "https://github.com/fluxcd/flux/releases/download/{{ flux_version }}/fluxctl_linux_{{ flux_arch }}"
+
+flux_namespace: "flux"
+flux_git_user: ""
+flux_git_email: "{{ flux_git_user }}@users.noreply.github.com"
+flux_git_url: ""
+flux_git_path: ""
+

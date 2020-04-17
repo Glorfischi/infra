@@ -1,0 +1,4 @@
+---
+calico_version: "v3-11"
+calico_dir: "calico"
+calico_pod_network: "10.232.0.0/16"

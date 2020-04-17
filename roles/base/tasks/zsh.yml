@@ -1,0 +1,52 @@
+---
+- name: Zsh -- Install
+  package: name={{ item }} state=latest
+  become: true
+  with_items:
+    - zsh
+    - fonts-powerline
+
+- name: Powerline -- Create font directory
+  become: true
+  file: 
+    path: "{{ item.home }}/.local/share/fonts" 
+    state: directory
+    owner: "{{ item.name }}"
+    group: "{{ item.name }}"
+  with_items: "{{ base_users }}"
+
+- name: Powerline -- Install
+  become: true
+  get_url: 
+    url: https://github.com/powerline/powerline/raw/develop/font/PowerlineSymbols.otf
+    dest: "{{ item.home }}/.local/share/fonts/PowerlineSymbols.otf"
+    owner: "{{ item.name }}"
+    group: "{{ item.name }}"
+  with_items: "{{ base_users }}"
+
+- name: Oh my zsh -- Install
+  become: true
+  git: 
+    repo: https://github.com/robbyrussell/oh-my-zsh.git
+    dest: "{{ item.home }}/.oh-my-zsh"
+  with_items: "{{ base_users }}"
+
+- name: Oh my zsh -- Fix permissions
+  become: true
+  file:
+    dest: "{{ item.home }}/.oh-my-zsh"
+    owner: "{{ item.name }}"
+    group: "{{ item.name }}"
+    recurse: yes
+  with_items: "{{ base_users }}"
+
+- name: Zsh -- Config
+  become: true
+  template:
+    src: zshrc.j2
+    dest: "{{ item.home }}/.zshrc"
+    owner: "{{ item.name }}"
+    group: "{{ item.name }}"
+  with_items: "{{ base_users }}"
+
+

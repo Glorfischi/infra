@@ -1,0 +1,75 @@
+---
+- name: Install minimal packages
+  package: name={{ item }} state=latest
+  become: true
+  with_items:
+    - ca-certificates
+    - iputils-ping
+    - net-tools
+    - sudo
+    - vim
+    - psmisc
+
+
+- name: Install extended packages
+  package: name={{ item }} state=latest
+  become: true
+  with_items:
+    - curl
+    - htop
+    - iftop
+    - lshw
+    - nmap
+    - tmux
+    - tree
+    - unzip
+    - git
+    - neovim
+  when: not base_minimal
+
+- name: Add base user
+  become: true
+  user:
+    name: "{{ item.name }}"
+    shell: "{{ '/usr/bin/zsh' if base_zsh else '/bin/bash' }}"
+    groups: sudo
+    append: yes
+  with_items: "{{ base_users }}"
+
+- name: Ensure that ssh directory of user exists
+  become: True
+  file:
+    path: "{{ item.home }}/.ssh"
+    state: directory
+  with_items: "{{ base_users }}"
+ 
+- name: Configure sudo without password
+  become: True
+  lineinfile:
+    dest: /etc/sudoers
+    owner: root
+    group: root
+    mode: 0440
+    line: "%sudo ALL=(ALL) NOPASSWD:ALL"
+    state: present
+    create: yes
+    validate: '/usr/sbin/visudo -cf %s'
+
+
+- name: Set up authorized keys for privileged user
+  become: True
+  authorized_key:
+    user: "{{ item.name }}"
+    state: present
+    key: "{{ base_authorized_keys | default([]) | join('\n') }}"
+    exclusive: yes
+  with_items: "{{ base_users }}"
+
+- name: Install zsh
+  include: zsh.yml
+  when: not base_minimal and base_zsh
+
+- name: Setup neovim
+  include: vim.yml
+  when: not base_minimal and base_vim
+

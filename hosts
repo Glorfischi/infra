@@ -1,0 +1,11 @@
+[wg]
+loki-master-0
+
+[loki-primary]
+loki-master-0
+
+[loki:children]
+loki-primary
+
+[all]
+loki-master-0 ansible_ssh_host=loki-master-0.wg.glorfischi.xyz

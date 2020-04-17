@@ -1,0 +1,8 @@
+---
+- hosts: all
+  roles:
+  - base
+  vars:
+    base_authorized_keys: 
+      - "{{ lookup('file', '../ssh/prometheus') }}"
+

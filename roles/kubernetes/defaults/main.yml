@@ -1,0 +1,5 @@
+---
+kubernetes_version: "1.18.0"
+kubernetes_pod_network_cidr: "10.232.0.0/16"
+kubernetes_kubeadm_opts: ""
+kubernetes_admin_config: "/etc/kubernetes/admin.conf"

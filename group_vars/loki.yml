@@ -1,0 +1,8 @@
+---
+kubernetes_control_plane_endpoint: "loki.glorfischi.xyz:6443"
+kubernetes_node: "worker"
+
+flux_namespace: "flux"
+flux_git_user: "glorfischi"
+flux_git_url: "git@github.com:{{ flux_git_user }}/infrastructure"
+flux_git_path: "kube/loki"
