@@ -29,7 +29,7 @@
 - name: Install flux
   shell: fluxctl install \
         --git-user={{ flux_git_user }} \
-        --git-email={{ flux_git_email }}\
-        --git-url={{ flux_git_url }}\
+        --git-email={{ flux_git_email }} \
+        --git-url={{ flux_git_url }} \
         --git-path={{ flux_git_path }} \
         --namespace={{ flux_namespace }} | kubectl apply -f -
