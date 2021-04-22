@@ -1,0 +1,14 @@
+---
+- name: Download protoc binary x64
+  become: true
+  unarchive:
+    src: https://github.com/protocolbuffers/protobuf/releases/download/v3.15.5/protoc-3.15.5-linux-x86_64.zip
+    dest: /usr/local/bin
+    remote_src: yes
+ 
+- name: Install go compiler
+  command:  /usr/local/go/bin/go get google.golang.org/protobuf/cmd/protoc-gen-go  google.golang.org/grpc/cmd/protoc-gen-go-grpc
+  environment: 
+    GOPATH: "{{ ansible_env.HOME }}"
+    GOROOT: "/usr/local/go"
+    GO11MODULE: "on"

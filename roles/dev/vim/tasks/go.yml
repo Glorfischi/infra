@@ -1,0 +1,42 @@
+---
+- name: Check if we have go already
+  stat:
+    path: /usr/local/go/bin/go 
+  register: binary
+  changed_when: not binary.stat.exists
+
+- name: Get current version 
+  command: /usr/local/go/bin/go version
+  register: version
+  changed_when: false
+  when: binary.stat.exists
+
+- name: Download tarball
+  become: true
+  get_url:
+    url: "{{ dev_vim_go_src_url }}"
+    dest: "/usr/local/src/{{ dev_vim_go_tarball }}"
+  when: not binary.stat.exists or version.stdout != dev_vim_go_version_target
+
+- name: Remove old installation of Go
+  become: true
+  file:
+    path: /usr/local/go
+    state: absent
+  when: not binary.stat.exists or version.stdout != dev_vim_go_version_target
+
+- name: Extract the Go tarball if Go is not yet installed or not the desired version
+  become: true
+  unarchive:
+    src: "/usr/local/src/{{ dev_vim_go_tarball }}"
+    dest: /usr/local
+    copy: no
+  when: not binary.stat.exists or version.stdout != dev_vim_go_version_target
+
+
+- name: Install gopls
+  command:  /usr/local/go/bin/go get golang.org/x/tools/gopls
+  environment: 
+    GOPATH: "{{ ansible_env.HOME }}"
+    GOROOT: "/usr/local/go"
+    GO11MODULE: "on"

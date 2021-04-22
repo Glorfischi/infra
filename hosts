@@ -1,3 +1,6 @@
+[workstation]
+baldr
+
 [wg]
 loki-master-0
 
@@ -7,5 +10,20 @@ loki-master-0
 [loki:children]
 loki-primary
 
+[do]
+odin-master-0
+
+[odin]
+odin-master-0
+
+[heimdal]
+heimdal
+
 [all]
 loki-master-0 ansible_ssh_host=loki-master-0.wg.glorfischi.xyz
+odin-master-0 ansible_ssh_host=odin-master-0.do.glorfischi.xyz
+
+
+baldr ansible_ssh_host=baldr.glorfischi.xyz
+heimdal ansible_ssh_host=heimdal.glorfischi.xyz
+

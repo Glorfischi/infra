@@ -1,0 +1,78 @@
+---
+- name: Install Xmonad and dependencies
+  package: name={{ item }} state=latest
+  become: true
+  with_items:
+    - xorg
+    - xmonad
+    - libghc-xmonad-dev
+    - libghc-xmonad-contrib-dev
+    - suckless-tools
+    - xfce4-terminal
+    - xmobar
+    - stalonetray
+    - polybar
+    - feh
+    - arandr
+    - pavucontrol
+    - lm-sensors
+
+- name: xmonad -- Add config directory
+  file: 
+    path: "{{ ansible_env.HOME }}/.xmonad" 
+    state: directory
+
+- name: xmonad -- Add config file
+  template:
+    src: xmonad.j2
+    dest: "{{ ansible_env.HOME }}/.xmonad/xmonad.hs" 
+
+- name: xmobar -- Add config file
+  template:
+    src: xmobar.j2
+    dest: "{{ ansible_env.HOME }}/.xmobarrc"
+  when: false
+
+- name: stalonetray -- Add config file
+  template:
+    src: stalonetray.j2
+    dest: "{{ ansible_env.HOME }}/.stalonetrayrc"
+
+- name: polybar -- Add config directory
+  file: 
+    path: "{{ ansible_env.HOME }}/.config/polybar"
+    state: directory
+
+- name: polybar -- Add config file
+  template:
+    src: polybar.j2
+    dest: "{{ ansible_env.HOME }}/.config/polybar/config"
+
+
+- name: xsession  -- Add config file
+  template:
+    src: xsession.j2
+    dest: "{{ ansible_env.HOME }}/.xsessionrc"
+
+
+- name: Xorg -- Add X config directory
+  become: true
+  file: 
+    path:  /etc/X11/xorg.conf.d
+    state: directory
+
+- name: Xorg -- Set keyboard Layout
+  become: true
+  template:
+    src: 00-keyboard.j2 
+    dest: /etc/X11/xorg.conf.d/00-keyboard.conf
+
+- name: Xorg -- Set trackpad Layout
+  become: true
+  template:
+    src: 01-synaptics.j2 
+    dest: /etc/X11/xorg.conf.d/01-synaptics.conf
+  when: gui_trackpad
+
+
+

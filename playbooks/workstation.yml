@@ -1,0 +1,60 @@
+---
+- hosts: workstation
+  roles:
+  - shell
+
+- hosts: workstation
+  become: true
+  collections:
+    - devsec.hardening
+  roles:
+    - ssh_hardening
+
+- hosts: workstation
+  roles:
+  - chrome
+  - gpu
+  - gui
+  - steam
+
+- hosts: workstation
+  tags: dev
+  roles:
+    - dev/vim
+    - dev/postgres
+    - dev/grpc
+
+
+- hosts: workstation
+  tags: docker
+  roles:
+    - docker
+
+
+- hosts: workstation
+  tags: k3s
+  become: true
+  roles:
+    - k3s
+    - kubectl
+
+
+- hosts: workstation
+  tags: latex
+  become: true
+  roles:
+    - latex
+
+
+- hosts: workstation
+  tags: wireshark
+  become: true
+  roles:
+    - wireshark
+
+
+- hosts: workstation
+  tags: gimp
+  become: true
+  roles:
+    - gimp

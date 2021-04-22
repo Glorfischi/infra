@@ -1,0 +1,40 @@
+---
+- name: Zsh -- Install
+  package: name={{ item }} state=latest
+  become: true
+  with_items:
+    - zsh
+    - fonts-powerline
+
+- name: Powerline -- Create font directory
+  file: 
+    path: "{{ ansible_env.HOME }}/.local/share/fonts" 
+    state: directory
+  when: False
+
+- name: Powerline -- Install
+  get_url: 
+    url: https://github.com/powerline/powerline/raw/develop/font/PowerlineSymbols.otf
+    dest: "{{ ansible_env.HOME }}/.local/share/fonts/PowerlineSymbols.otf"
+  when: False
+
+- name: Oh my zsh -- Install
+  become: true
+  git: 
+    repo: https://github.com/robbyrussell/oh-my-zsh.git
+    dest: "{{ ansible_env.HOME }}/.oh-my-zsh"
+
+- name: Zsh -- Config
+  become: true
+  template:
+    src: zshrc.j2
+    dest: "{{ ansible_env.HOME }}/.zshrc"
+
+
+- name: ZSH -- change user shell to zsh 
+  become: yes
+  user:
+    name: "{{ ansible_user_id }}"
+    shell: /bin/zsh
+
+

@@ -1,0 +1,51 @@
+---
+- name: Create traefik config directory
+  file:
+    path: "/home/fischi/traefik"
+    state: directory
+
+- name: "Add config files"
+  template:
+    src: "traefik.j2"
+    dest: "/home/fischi/traefik/traefik.toml"
+
+
+- name: "Add config routes"
+  template:
+    src: "traefik_routes.j2"
+    dest: "/home/fischi/traefik/traefik_routes.toml"
+
+- name: "Touch acme.json"
+  copy:
+    content: ""
+    dest: "/home/fischi/traefik/acme.json"
+    force: no
+    mode: '600'
+
+
+
+- name: "Add internal network"
+  become: true
+  docker_network:
+    name: "proxy"
+
+
+- name: "Start traefik"
+  become: true
+  docker_container:
+    name: traefik
+    state: started
+    image: traefik:v2.2
+    restart: yes
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - name: proxy
+    volumes:
+      - /home/fischi/traefik/traefik.toml:/traefik.toml
+      - /home/fischi/traefik/traefik_routes.toml:/traefik_routes.toml 
+      - /home/fischi/traefik/acme.json:/acme.json 
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  

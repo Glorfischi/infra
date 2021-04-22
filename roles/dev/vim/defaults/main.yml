@@ -1,0 +1,7 @@
+---
+
+dev_vim_go: true
+dev_vim_go_version: "1.16"
+dev_vim_go_tarball: "go{{ dev_vim_go_version }}.linux-amd64.tar.gz"
+dev_vim_go_src_url: "https://storage.googleapis.com/golang/{{ dev_vim_go_tarball }}"
+dev_vim_go_version_target: "go version go{{ dev_vim_go_version }} linux/amd64"

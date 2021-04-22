@@ -1,0 +1,17 @@
+---
+- hosts: odin
+  roles:
+  - shell
+  - docker
+
+- hosts: odin
+  tags: traefik
+  roles:
+  - docker-traefik
+
+- hosts: odin
+  become: true
+  collections:
+    - devsec.hardening
+  roles:
+    - ssh_hardening

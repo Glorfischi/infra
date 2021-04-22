@@ -1,0 +1,32 @@
+---
+- name: Install minimal packages
+  package: name={{ item }} state=latest
+  become: true
+  with_items:
+    - ca-certificates
+    - iputils-ping
+    - net-tools
+    - sudo
+    - vim
+    - psmisc
+
+
+- name: Install extended packages
+  package: name={{ item }} state=latest
+  become: true
+  with_items:
+    - curl
+    - htop
+    - iftop
+    - lshw
+    - nmap
+    - tmux
+    - tree
+    - unzip
+    - git
+  when: not shell_minimal
+
+- name: Install zsh
+  include: zsh.yml
+  when:  shell_zsh
+

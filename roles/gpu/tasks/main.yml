@@ -1,0 +1,13 @@
+- name: Add non-free sources
+  become: true
+  ansible.builtin.apt_repository:
+    repo: "deb http://deb.debian.org/debian/ {{ ansible_distribution_release }} main contrib non-free"
+    state: present
+
+- name: Install nvidia drivers
+  package: name={{ item }} state=latest
+  become: true
+  with_items:
+    - linux-headers-amd64
+    - nvidia-driver
+    - firmware-misc-nonfree

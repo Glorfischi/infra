@@ -1,0 +1,83 @@
+---
+- name: Neovim -- Install
+  package: name={{ item }} state=latest
+  become: true
+  with_items:
+    - neovim
+
+- name: Powerline -- Create font directory
+  become: true
+  file: 
+    path: "{{ item.home }}/.local/share/fonts" 
+    state: directory
+    owner: "{{ item.name }}"
+    group: "{{ item.name }}"
+  with_items: "{{ base_users }}"
+
+- name: Powerline -- Install
+  become: true
+  get_url: 
+    url: https://github.com/powerline/powerline/raw/develop/font/PowerlineSymbols.otf
+    dest: "{{ item.home }}/.local/share/fonts/PowerlineSymbols.otf"
+    owner: "{{ item.name }}"
+    group: "{{ item.name }}"
+  with_items: "{{ base_users }}"
+
+- name: Vim-plug -- Create autoload directory
+  become: true
+  file: 
+    path: "{{ item.home }}/.local/share/nvim/site/autoload" 
+    state: directory
+    owner: "{{ item.name }}"
+    group: "{{ item.name }}"
+    recurse: yes
+  with_items: "{{ base_users }}"
+
+- name: Vim-plug -- Install
+  become: true
+  get_url: 
+    url: https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim 
+    dest: "{{ item.home }}/.local/share/nvim/site/autoload/plug.vim" 
+    owner: "{{ item.name }}"
+    group: "{{ item.name }}"
+  with_items: "{{ base_users }}"
+
+- name: Neovim -- Create config directory
+  become: true
+  file: 
+    path: "{{ item.home }}/.config/nvim/colors"
+    state: directory
+    owner: "{{ item.name }}"
+    group: "{{ item.name }}"
+    recurse: yes
+  with_items: "{{ base_users }}"
+
+- name: Neovim -- Create color directory
+  become: true
+  file: 
+    path: "{{ item.home }}/.config/nvim"
+    state: directory
+    owner: "{{ item.name }}"
+    group: "{{ item.name }}"
+    recurse: yes
+  with_items: "{{ base_users }}"
+
+- name: Neovim -- Add colorscheme
+  become: true
+  copy:
+    src: solarized.vim
+    dest: "{{ item.home }}/.config/nvim/colors/solarized.vim"
+    owner: "{{ item.name }}"
+    group: "{{ item.name }}"
+  with_items: "{{ base_users }}"
+
+- name: Vim -- Config
+  become: true
+  template:
+    src: vimrc.j2
+    dest: "{{ item.home }}/.config/nvim/init.vim"
+    owner: "{{ item.name }}"
+    group: "{{ item.name }}"
+  with_items: "{{ base_users }}"
+
+

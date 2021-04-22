@@ -24,7 +24,6 @@
     - tree
     - unzip
     - git
-    - neovim
   when: not base_minimal
 
 - name: Add base user
@@ -54,6 +53,7 @@
     state: present
     create: yes
     validate: '/usr/sbin/visudo -cf %s'
+  when: base_pwdless_sudo
 
 
 - name: Set up authorized keys for privileged user

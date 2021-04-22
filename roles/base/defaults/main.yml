@@ -3,6 +3,8 @@ base_minimal: False
 base_zsh: True
 base_vim: True
 
+base_pwdless_sudo: True
+
 base_users:
   - name: "fischi"
     home: "/home/fischi"

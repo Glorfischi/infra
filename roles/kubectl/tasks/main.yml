@@ -1,0 +1,38 @@
+---
+
+- name: Ensure dependencies are installed.
+  become: true
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - apt-transport-https
+    - gnupg2
+
+- name: Add kube apt key.
+  become: true
+  apt_key:
+    url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+    state: present
+
+- name: Add kube repository.
+  become: true
+  apt_repository:
+    repo: "{{ kubectl_apt_repository }}"
+    state: present
+    update_cache: yes
+
+- name: Install kubectl
+  become: true
+  package:
+    name: kubectl
+    state: present
+
+
+- name: Download kustomize binary x64
+  become: true
+  unarchive:
+    src: https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv4.0.4/kustomize_v4.0.4_linux_amd64.tar.gz
+    dest: /usr/local/bin
+    remote_src: yes
+ 

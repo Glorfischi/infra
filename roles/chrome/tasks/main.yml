@@ -1,0 +1,31 @@
+- name: Download deb
+  get_url: 
+    url: https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+    dest: /tmp/chrome.deb
+
+- name: Install chrome
+  apt:
+    deb: /tmp/chrome.deb
+  become: true
+
+
+
+- name: Add gnupg
+  package: name={{ item }} state=latest
+  become: true
+  with_items:
+    - gnupg
+
+- name: Add Google apt singing key
+  become: true
+  ansible.builtin.apt_key:
+    url: https://dl.google.com/linux/linux_signing_key.pub
+    state: present
+
+- name: symlink chrome -> google-chrome
+  become: true
+  file:
+    src: /usr/bin/google-chrome
+    dest: /usr/bin/chrome
+    state: link
+

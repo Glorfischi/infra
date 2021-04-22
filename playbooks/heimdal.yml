@@ -1,0 +1,19 @@
+---
+- hosts: heimdal
+  roles:
+  - shell
+
+- hosts: heimdal
+  become: true
+  collections:
+    - devsec.hardening
+  roles:
+    - ssh_hardening
+
+- hosts: heimdal
+  tags: k3s
+  become: true
+  roles:
+  - k3s
+
+

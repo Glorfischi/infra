@@ -1,0 +1,10 @@
+---
+
+docker_traefik_dashboard:
+  enabled: true
+  host: traefik.glorfischi.xyz
+  
+docker_traefik_simple_auth: true
+docker_traefik_simple_auth_users:
+  - name: fischi
+    password: test
